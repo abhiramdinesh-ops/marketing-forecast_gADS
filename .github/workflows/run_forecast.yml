@@ -22,7 +22,9 @@ jobs:
         run: |
           pip install prophet psycopg2-binary gspread oauth2client pandas numpy nbconvert ipykernel
           python -m ipykernel install --user
-
+      - name: Create Google credentials file
+        run: |
+          echo '${{ secrets.GOOGLE_CREDENTIALS }}' > google_credentials.json
       - name: Run notebook
         env:
           REDSHIFT_HOST: ${{ secrets.REDSHIFT_HOST }}
