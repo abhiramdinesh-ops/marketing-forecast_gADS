@@ -2,7 +2,7 @@ name: Run Marketing Forecast
 
 on:
   schedule:
-    - cron: '0 3 * * *'   # runs daily
+    - cron: '0 */6 * * *'   # runs daily
   workflow_dispatch:
 
 jobs:
@@ -22,9 +22,11 @@ jobs:
         run: |
           pip install prophet psycopg2-binary gspread oauth2client pandas numpy nbconvert ipykernel
           python -m ipykernel install --user
+
       - name: Create Google credentials file
         run: |
           echo '${{ secrets.GOOGLE_CREDENTIALS }}' > google_credentials.json
+
       - name: Run notebook
         env:
           REDSHIFT_HOST: ${{ secrets.REDSHIFT_HOST }}
@@ -33,3 +35,8 @@ jobs:
           REDSHIFT_DB: ${{ secrets.REDSHIFT_DB }}
         run: |
           jupyter nbconvert --execute Python_Forecast_Gsheet_Google_Ads.ipynb --to notebook
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          echo "Forecast pipeline failed on $(date)" | mail -s "Forecast Job Failed" abhiram.dinesh@vandalayglobal.com
