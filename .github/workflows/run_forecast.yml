@@ -20,7 +20,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install prophet psycopg2-binary gspread oauth2client pandas numpy nbconvert
+          pip install prophet psycopg2-binary gspread oauth2client pandas numpy nbconvert ipykernel
+          python -m ipykernel install --user
 
       - name: Run notebook
         run: |
